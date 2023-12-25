@@ -6,7 +6,7 @@ from cafeteria import Cafeteria
 from student import Aspirant, Student
 from university import University
 
-# # Чтение данных об университетах из файла
+# Чтение данных об университетах из файла
 with open("universities.json", "r", encoding="utf-8") as file:
     universities_data = json.load(file)
 
