@@ -1,44 +1,54 @@
+from typing import Any, Optional, Union
+
 from cafeteria import Cafeteria
 from student import Aspirant, Student
 
 
 class University:
-    def __init__(self, name, students, aspirants, cafeterias=None):
-        self.name = name
-        self.students = [Student(**student) for student in students]
-        self.aspirants = [Aspirant(**aspirant) for aspirant in aspirants]
+    def __init__(
+        self,
+        name: str,
+        students: list[dict[str, Any]],
+        aspirants: list[dict[str, Any]],
+        cafeterias: Optional[list[dict[str, Any]]] = None,
+    ) -> None:
+        self.name: str = name
+        self.students: list[Student] = [Student(**student) for student in students]
+        self.aspirants: list[Aspirant] = [
+            Aspirant(**aspirant) for aspirant in aspirants
+        ]
         self.scholarship_balance = 200
 
-        self.cafeterias = (
+        self.cafeterias: list[Cafeteria] = (
             [Cafeteria(**cafeteria) for cafeteria in cafeterias] if cafeterias else []
         )
 
-    def __str__(self):
-        university_info = [f"Университет: {self.name}"]
+    def __str__(self) -> str:
+        university_info: list[str] = [f"Университет: {self.name}"]
 
-        students_info = ["Студенты:"]
+        students_info: list[str] = ["Студенты:"]
         students_info.extend(str(student) for student in self.students)
 
-        aspirants_info = ["Аспиранты:"]
+        aspirants_info: list[str] = ["Аспиранты:"]
         aspirants_info.extend(str(aspirant) for aspirant in self.aspirants)
 
-        cafeterias_info = ["Столовые:"]
+        cafeterias_info: list[str] = ["Столовые:"]
         cafeterias_info.extend(str(cafeteria) for cafeteria in self.cafeterias)
 
         university_info.extend(students_info + aspirants_info + cafeterias_info)
         return "\n".join(university_info)
 
-    def enroll_student(self, student):
+    def enroll_student(self, student) -> None:
         self.students.append(student)
         print(
             f"Студент {student.last_name} {student.first_name} {student.second_name} зачислен в университет {self.name}."
         )
 
-    def enroll_students(self, *students):
+    def enroll_students(self, *students) -> None:
         for student in students:
             self.enroll_student(student)
 
-    def dismiss_student(self, first_name, last_name, group=None):
+    def dismiss_student(self, first_name, last_name, group=None) -> None:
         for student in self.students:
             if (
                 student.first_name == first_name
@@ -53,7 +63,7 @@ class University:
         else:
             print(f"Студент {last_name} {first_name} не найден.")
 
-    def pay_scholarship(self):
+    def pay_scholarship(self) -> None:
         for student in self.students:
             student.receive_scholarship(self.scholarship_balance)
 
@@ -62,32 +72,34 @@ class University:
 
         print("Стипендия выплачена всем студентам и аспирантам.")
 
-    def conduct_olympiad(self):
-        scores = []
+    def conduct_olympiad(self) -> None:
+        scores: list[tuple[Union[Student, Aspirant], int]] = []
 
         for student in self.students:
-            score = student.participate_in_olympiad()
+            score: int = student.participate_in_olympiad()
             scores.append((student, score))
 
         for aspirant in self.aspirants:
-            score = aspirant.participate_in_olympiad()
+            score: int = aspirant.participate_in_olympiad()
             scores.append((aspirant, score))
 
         scores.sort(key=lambda x: x[1], reverse=True)
 
-        top_performers = scores[:3]  # Топ-3 участников
+        top_performers: list[tuple[Union[Student, Aspirant], int]] = scores[:3]
 
         for performer, score in top_performers:
             performer.receive_scholarship(500)
-            scholar_type = "Студент" if isinstance(performer, Student) else "Аспирант"
+            scholar_type: str = (
+                "Студент" if isinstance(performer, Student) else "Аспирант"
+            )
             print(
                 f"{scholar_type} {performer.first_name} {performer.last_name} получает дополнительную стипендию в размере 500 у.е. за успешное участие в олимпиаде."
             )
 
 
 if __name__ == "__main__":
-    # Создаем объекты класса University с информацией о блюдах и столовых
-    university_data_with_cafeterias = {
+    # Создание объекта университета с данными из словаря
+    university_data_with_cafeterias: dict[str, Any] = {
         "name": "Мой Университет",
         "students": [
             {
@@ -147,10 +159,12 @@ if __name__ == "__main__":
         ],
     }
 
+    # Создание объекта университета
     university = University(**university_data_with_cafeterias)
 
     print(university)
 
+    # Создание трех студентов
     student1 = Student(
         first_name="John",
         second_name="Doe",
@@ -173,18 +187,22 @@ if __name__ == "__main__":
         marks=[5, 4, 5],
     )
 
+    # Зачисление студентов в университет
     university.enroll_student(student1)
     university.enroll_students(student2, student3)
 
     print(university)
 
+    # Отчисление студентов
     university.dismiss_student(first_name="John", last_name="Smith")
     university.dismiss_student(first_name="Jane", last_name="Johnson", group="CS102")
 
     print(university)
 
+    # Выплата стипендии студентам и аспирантам
     university.pay_scholarship()
 
     print(university)
 
+    # Проведение олимпиады и вывод результатов
     university.conduct_olympiad()

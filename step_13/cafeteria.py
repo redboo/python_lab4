@@ -1,23 +1,28 @@
-class Dish:
-    def __init__(self, name, satiety, cost):
-        self.name = name
-        self.satiety = satiety
-        self.cost = cost
+from typing import Any
 
-    def __str__(self):
+
+class Dish:
+    def __init__(self, name: str, satiety: int, cost: float) -> None:
+        self.name: str = name
+        self.satiety: int = satiety
+        self.cost: float = cost
+
+    def __str__(self) -> str:
         return f"{self.name} (Сытость: {self.satiety}, Стоимость: {self.cost} у.е.)"
 
 
 class Cafeteria:
-    def __init__(self, name, dishes, money):
-        self.name = name
-        self.dishes = [Dish(**dish) for dish in dishes]
-        self.money = money
+    def __init__(self, name: str, dishes: list[dict[str, Any]], money: float) -> None:
+        self.name: str = name
+        self.dishes: list[Dish] = [Dish(**dish) for dish in dishes]
+        self.money: float = money
 
-    def __str__(self):
-        cafeteria_info = [f"Столовая: {self.name} (Деньги: {self.money} у.е.)"]
+    def __str__(self) -> str:
+        cafeteria_info: list[str] = [
+            f"Столовая: {self.name} (Деньги: {self.money} у.е.)"
+        ]
 
-        dishes_info = ["Блюда:"]
+        dishes_info: list[str] = ["Блюда:"]
         dishes_info.extend(str(dish) for dish in self.dishes)
 
         cafeteria_info.extend(dishes_info)
@@ -25,7 +30,8 @@ class Cafeteria:
 
 
 if __name__ == "__main__":
-    cafeterias = [
+    # Инициализация данных о столовых
+    cafeterias_data: list[dict[str, Any]] = [
         {
             "name": "Столовая 1",
             "dishes": [
@@ -46,5 +52,6 @@ if __name__ == "__main__":
         },
     ]
 
-    for cafeteria in cafeterias:
-        print(Cafeteria(**cafeteria))
+    # Создание объектов столовых и вывод их информации
+    for cafeteria_data in cafeterias_data:
+        print(Cafeteria(**cafeteria_data))
